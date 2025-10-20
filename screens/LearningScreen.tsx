@@ -11,7 +11,7 @@ type LearningCategory = 'letters' | 'numbers' | 'colors';
  * Premium items are locked for non-subscribed users.
  */
 const LearningScreen: React.FC = () => {
-  const { content, isSubscribed, setCurrentPage } = useAppContext();
+  const { content, isSubscribed, setCurrentPage, language } = useAppContext();
   const [activeTab, setActiveTab] = useState<LearningCategory>('letters');
 
   const learningData: { [key in LearningCategory]: LearningItem[] } = {
@@ -28,13 +28,36 @@ const LearningScreen: React.FC = () => {
     if (item.isPremium && !isSubscribed) {
       setCurrentPage('subscribe');
     } else {
-      // Play the sound associated with the item.
-      // NOTE: This requires actual audio files at the specified 'audioUrl' paths.
-      // In this demo, the browser may log a 404 error for the audio file, which is expected.
-      const audio = new Audio(item.audioUrl);
-      audio.play().catch(error => {
-        console.warn(`Could not play audio from "${item.audioUrl}". This is expected if audio files are not present.`, error);
-      });
+      // Use Web Speech API to pronounce the word
+      if ('speechSynthesis' in window) {
+        // Stop any currently speaking utterance to prevent overlap
+        window.speechSynthesis.cancel();
+        
+        let textToSpeak = '';
+        const category = item.id.split('-')[1]; // 'l' for letter, 'n' for number, 'c' for color
+
+        if (category === 'l') {
+            // For letters, pronounce the letter and then the example word
+            textToSpeak = `${item.display}, ${item.word}`;
+        } else if (category === 'n') {
+            // For numbers, pronounce the word for the number
+            textToSpeak = item.word;
+        } else if (category === 'c') {
+            // For colors, pronounce the color name
+            textToSpeak = item.display;
+        }
+
+        if (textToSpeak) {
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            
+            // Set the language for the speech synthesis
+            utterance.lang = language === 'ar' ? 'ar-SA' : 'en-US';
+            
+            window.speechSynthesis.speak(utterance);
+        }
+      } else {
+          console.warn('Web Speech API is not supported in this browser.');
+      }
     }
   };
 
