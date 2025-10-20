@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Header from '../components/Header';
 import { useAppContext } from '../hooks/useAppContext';
 import type { ColorQuizQuestion } from '../types';
 
 // Helper function to shuffle an array
 const shuffleArray = <T,>(array: T[]): T[] => {
-  return array.sort(() => Math.random() - 0.5);
+  // Fix: Replaced sort-based shuffle with the Fisher-Yates algorithm.
+  // This is more robust, prevents state mutation by creating a copy,
+  // and resolves the TypeScript type inference error.
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
 };
 
 /**
@@ -48,6 +56,13 @@ const ColorQuizGameScreen: React.FC = () => {
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  // Fix: Memoize the shuffled options to prevent them from re-shuffling on every component render,
+  // which could create a confusing user experience.
+  const shuffledOptions = useMemo(() => {
+    if (!currentQuestion) return [];
+    return shuffleArray(currentQuestion.options);
+  }, [currentQuestion]);
+
   return (
     <div className="flex flex-col h-full bg-purple-50">
       <Header title={content.colorQuiz.title} backPage="games" />
@@ -65,7 +80,7 @@ const ColorQuizGameScreen: React.FC = () => {
         <div className="flex flex-col items-center justify-center flex-grow p-8 text-center">
             <h2 className="text-4xl font-bold mb-8">{content.colorQuiz.question(currentQuestion.colorName)}</h2>
             <div className="grid grid-cols-2 gap-4 w-full max-w-xs">
-                {shuffleArray(currentQuestion.options).map((colorHex, index) => (
+                {shuffledOptions.map((colorHex, index) => (
                     <button 
                         key={index}
                         onClick={() => handleAnswerClick(colorHex)}

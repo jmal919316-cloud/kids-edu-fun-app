@@ -252,6 +252,9 @@ export const contentData: { [key: string]: Content } = {
         { id: 'quran-2', name: 'Al-Ikhlas', englishName: 'The Sincerity', imageUrl: 'https://picsum.photos/seed/mosque/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112001.mp3' },
         { id: 'quran-3', name: 'Al-Falaq', englishName: 'The Daybreak', imageUrl: 'https://picsum.photos/seed/dawn/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/113001.mp3' },
         { id: 'quran-4', name: 'An-Nas', englishName: 'The Mankind', imageUrl: 'https://picsum.photos/seed/people/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/114001.mp3' },
+        { id: 'quran-5', name: 'Al-Asr', englishName: 'The Time', imageUrl: 'https://picsum.photos/seed/time/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/103001.mp3' },
+        { id: 'quran-6', name: 'An-Nasr', englishName: 'The Help', imageUrl: 'https://picsum.photos/seed/victory/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/110001.mp3' },
+        { id: 'quran-7', name: 'Al-Masad', englishName: 'The Palm Fiber', imageUrl: 'https://picsum.photos/seed/palm/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/111001.mp3' },
     ],
     matchingGameCards: [
         { id: 'card-1', content: 'Apple', imageUrl: 'https://picsum.photos/seed/apple/100', matchId: 'fruit' },
@@ -428,6 +431,9 @@ export const contentData: { [key: string]: Content } = {
         { id: 'quran-2', name: 'سورة الإخلاص', englishName: 'The Sincerity', imageUrl: 'https://picsum.photos/seed/mosque/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112001.mp3' },
         { id: 'quran-3', name: 'سورة الفلق', englishName: 'The Daybreak', imageUrl: 'https://picsum.photos/seed/dawn/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/113001.mp3' },
         { id: 'quran-4', name: 'سورة الناس', englishName: 'The Mankind', imageUrl: 'https://picsum.photos/seed/people/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/114001.mp3' },
+        { id: 'quran-5', name: 'سورة العصر', englishName: 'The Time', imageUrl: 'https://picsum.photos/seed/time/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/103001.mp3' },
+        { id: 'quran-6', name: 'سورة النصر', englishName: 'The Help', imageUrl: 'https://picsum.photos/seed/victory/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/110001.mp3' },
+        { id: 'quran-7', name: 'سورة المسد', englishName: 'The Palm Fiber', imageUrl: 'https://picsum.photos/seed/palm/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/111001.mp3' },
     ],
     matchingGameCards: [
         { id: 'card-1', content: 'تفاحة', imageUrl: 'https://picsum.photos/seed/apple/100', matchId: 'fruit' },

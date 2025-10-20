@@ -47,22 +47,19 @@ const QuranScreen: React.FC = () => {
     return (
         <div className="flex flex-col h-full bg-teal-50">
             <Header title={content.quran.title} backPage="home" />
-            <div className="p-4 space-y-4 overflow-y-auto">
+            <div className="p-4 grid grid-cols-2 gap-4 overflow-y-auto">
                 {content.quranSurahs.map(surah => {
                     const isPlaying = playingId === surah.id;
                     return (
-                        <div
-                            key={surah.id}
-                            className="w-full flex items-center bg-white rounded-xl shadow-md p-4"
-                        >
-                            <img src={surah.imageUrl} alt={surah.name} className="w-24 h-24 rounded-lg object-cover me-4 shrink-0"/>
-                            <div className="flex-grow">
-                                <h3 className="text-2xl font-bold text-brand-teal">{surah.name}</h3>
+                        <div key={surah.id} className="bg-white rounded-2xl shadow-lg p-3 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-200">
+                            <img src={surah.imageUrl} alt={surah.name} className="w-full h-28 rounded-xl object-cover mb-3"/>
+                            <div className="flex-grow flex flex-col justify-center mb-2">
+                                <h3 className="text-xl font-bold text-brand-teal">{surah.name}</h3>
                                 <p className="text-gray-500">{surah.englishName}</p>
                             </div>
                             <button
                                 onClick={() => handlePlayPause(surah)}
-                                className={`w-16 h-16 rounded-full flex items-center justify-center text-white text-3xl shrink-0 transition-colors ${isPlaying ? 'bg-brand-pink' : 'bg-brand-teal'}`}
+                                className={`w-14 h-14 rounded-full flex items-center justify-center text-white text-3xl shrink-0 transition-all duration-200 active:scale-90 shadow-md ${isPlaying ? 'bg-brand-pink' : 'bg-brand-teal'}`}
                                 aria-label={isPlaying ? `Pause ${surah.name}` : `Play ${surah.name}`}
                             >
                                 {isPlaying ? '❚❚' : '▶'}
