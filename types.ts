@@ -16,6 +16,7 @@ export interface LearningItem {
   display: string;
   word: string;
   imageUrl: string;
+  audioUrl: string; // Path to the audio file for pronunciation
   isPremium?: boolean; // Optional: true if this item requires a subscription
   colorHex?: string; // Optional: hex code for color items
 }

@@ -25,10 +25,17 @@ const LearningScreen: React.FC = () => {
   };
   
   const handleItemClick = (item: LearningItem) => {
-    if(item.isPremium && !isSubscribed) {
-        setCurrentPage('subscribe');
+    if (item.isPremium && !isSubscribed) {
+      setCurrentPage('subscribe');
+    } else {
+      // Play the sound associated with the item.
+      // NOTE: This requires actual audio files at the specified 'audioUrl' paths.
+      // In this demo, the browser may log a 404 error for the audio file, which is expected.
+      const audio = new Audio(item.audioUrl);
+      audio.play().catch(error => {
+        console.warn(`Could not play audio from "${item.audioUrl}". This is expected if audio files are not present.`, error);
+      });
     }
-    // In a real app, you might play a sound or show a detail view here
   };
 
   return (
