@@ -17,6 +17,7 @@ export interface LearningItem {
   word: string;
   imageUrl: string;
   isPremium?: boolean; // Optional: true if this item requires a subscription
+  colorHex?: string; // Optional: hex code for color items
 }
 
 /**
