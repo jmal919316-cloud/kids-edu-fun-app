@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../hooks/useAppContext';
 import Header from '../components/Header';
 import type { LearningItem } from '../types';
@@ -13,6 +13,30 @@ type LearningCategory = 'letters' | 'numbers' | 'colors';
 const LearningScreen: React.FC = () => {
   const { content, isSubscribed, setCurrentPage, language } = useAppContext();
   const [activeTab, setActiveTab] = useState<LearningCategory>('letters');
+  // State to hold the loaded voices, crucial for mobile compatibility.
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  // Effect to load speech synthesis voices when the component mounts.
+  // This approach is more reliable on mobile devices where voices can load asynchronously.
+  useEffect(() => {
+    const loadVoices = () => {
+      const availableVoices = window.speechSynthesis.getVoices();
+      if (availableVoices.length > 0) {
+        setVoices(availableVoices);
+      }
+    };
+
+    // Load voices initially.
+    loadVoices();
+    
+    // The 'voiceschanged' event is fired when the list of available voices changes.
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    
+    // Cleanup the event listener when the component unmounts.
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
 
   const handleTabClick = (tab: LearningCategory) => {
     setActiveTab(tab);
@@ -20,7 +44,7 @@ const LearningScreen: React.FC = () => {
   
   /**
    * Handles clicks on learning items, providing pronunciation using the Web Speech API.
-   * This implementation is robust for mobile devices where voices may load asynchronously.
+   * This implementation uses pre-loaded voices for better mobile reliability.
    */
   const handleItemClick = (item: LearningItem) => {
     if (item.isPremium && !isSubscribed) {
@@ -28,7 +52,6 @@ const LearningScreen: React.FC = () => {
       return;
     }
     
-    // Check for browser support for speech synthesis.
     if (!('speechSynthesis' in window)) {
         console.error("This browser does not support speech synthesis.");
         return;
@@ -61,28 +84,17 @@ const LearningScreen: React.FC = () => {
     utterance.rate = 0.9;
     utterance.pitch = 1.1;
 
-    // This function finds the best available voice and triggers the speech.
-    const speak = () => {
-        const voices = window.speechSynthesis.getVoices();
-        // Find the best matching voice for the current language.
-        const voice = voices.find(v => v.lang === targetLang) || voices.find(v => v.lang.startsWith(language));
-        
-        if (voice) {
-          utterance.voice = voice;
-        }
-        
-        window.speechSynthesis.speak(utterance);
-    };
-
-    // Voices often load asynchronously, especially on mobile.
-    // Check if they are already loaded.
-    if (window.speechSynthesis.getVoices().length > 0) {
-      speak();
+    // Find the best available voice from the pre-loaded list.
+    const voice = voices.find(v => v.lang === targetLang) || voices.find(v => v.lang.startsWith(language));
+    
+    if (voice) {
+      utterance.voice = voice;
     } else {
-      // If voices are not ready, set up a listener to speak as soon as they are.
-      // This is crucial for mobile browser compatibility.
-      window.speechSynthesis.onvoiceschanged = speak;
+       console.warn(`Speech synthesis voice not found for language: ${targetLang}`);
     }
+    
+    // Speak the utterance directly within the user-initiated event.
+    window.speechSynthesis.speak(utterance);
   };
 
   const learningData = {
