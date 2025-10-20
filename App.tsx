@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useAppContext } from './hooks/useAppContext';
 import LanguageSelectionScreen from './screens/LanguageSelectionScreen';
@@ -11,6 +10,8 @@ import SettingsScreen from './screens/SettingsScreen';
 import AdBanner from './components/AdBanner';
 import MatchingGameScreen from './screens/MatchingGameScreen';
 import StoryViewerScreen from './screens/StoryViewerScreen';
+import SubscriptionScreen from './screens/SubscriptionScreen';
+import ColorQuizGameScreen from './screens/ColorQuizGameScreen';
 
 /**
  * The main component of the application.
@@ -41,12 +42,16 @@ const App: React.FC = () => {
         return <GamesScreen />;
       case 'matching-game':
         return <MatchingGameScreen />;
+      case 'color-quiz-game':
+        return <ColorQuizGameScreen />;
       case 'stories':
         return storyId ? <StoryViewerScreen /> : <StoriesScreen />;
       case 'rewards':
         return <RewardsScreen />;
       case 'settings':
         return <SettingsScreen />;
+      case 'subscribe':
+        return <SubscriptionScreen />;
       default:
         return <HomeScreen />;
     }

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from '../components/Header';
 import { useAppContext } from '../hooks/useAppContext';
@@ -15,7 +14,7 @@ const StoriesScreen: React.FC = () => {
         if (!story.isPremium || isSubscribed) {
             setStoryId(story.id);
         } else {
-            alert('Subscribe to read this story!'); // Simple alert for demo purposes
+            setCurrentPage('subscribe');
         }
     };
 
@@ -27,10 +26,10 @@ const StoriesScreen: React.FC = () => {
                     <button
                         key={story.id}
                         onClick={() => handleStoryClick(story)}
-                        className="w-full flex items-center bg-white rounded-xl shadow-md p-4 active:scale-95 transition-transform"
+                        className="w-full flex items-center bg-white rounded-xl shadow-md p-4 active:scale-95 transition-transform text-left"
                     >
-                        <img src={story.imageUrl} alt={story.title} className="w-24 h-24 rounded-lg object-cover me-4"/>
-                        <div className="flex-grow text-start">
+                        <img src={story.imageUrl} alt={story.title} className="w-24 h-24 rounded-lg object-cover me-4 shrink-0"/>
+                        <div className="flex-grow">
                             <h3 className="text-2xl font-bold">{story.title}</h3>
                             {story.isPremium && (
                                 <div className={`mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-bold ${isSubscribed ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>

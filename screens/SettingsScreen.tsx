@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from '../components/Header';
 import { useAppContext } from '../hooks/useAppContext';
@@ -8,7 +7,7 @@ import { useAppContext } from '../hooks/useAppContext';
  * Allows users to change the language and manage their (simulated) subscription.
  */
 const SettingsScreen: React.FC = () => {
-    const { content, language, setLanguage, isSubscribed, setIsSubscribed } = useAppContext();
+    const { content, language, setLanguage, isSubscribed, setCurrentPage } = useAppContext();
 
     return (
         <div className="flex flex-col h-full">
@@ -47,12 +46,11 @@ const SettingsScreen: React.FC = () => {
                             <div className="text-center">
                                 <p className="mb-4 text-gray-600">{content.settings.subscribe}</p>
                                 <button
-                                    onClick={() => setIsSubscribed(true)}
+                                    onClick={() => setCurrentPage('subscribe')}
                                     className="w-full bg-brand-purple text-white font-bold py-3 px-4 rounded-lg active:scale-95 transition-transform"
                                 >
-                                    {content.settings.subscribe.split(' ')[0]} {/* Get first word for button */}
+                                    {content.settings.goToSubscribe}
                                 </button>
-                                <p className="text-xs text-gray-400 mt-2">(This is a simulation. No real payment is required.)</p>
                             </div>
                         )}
                     </div>
