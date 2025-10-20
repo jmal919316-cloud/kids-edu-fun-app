@@ -41,6 +41,7 @@ export interface QuranSurah {
   englishName: string;
   imageUrl: string;
   audioUrl: string;
+  verses: string[]; // Holds the Arabic text for each verse
 }
 
 /**

@@ -13,13 +13,14 @@ import StoryViewerScreen from './screens/StoryViewerScreen';
 import SubscriptionScreen from './screens/SubscriptionScreen';
 import ColorQuizGameScreen from './screens/ColorQuizGameScreen';
 import QuranScreen from './screens/QuranScreen';
+import QuranViewerScreen from './screens/QuranViewerScreen';
 
 /**
  * The main component of the application.
  * It acts as a router to display different screens based on the current state.
  */
 const App: React.FC = () => {
-  const { language, languageSelected, currentPage, storyId } = useAppContext();
+  const { language, languageSelected, currentPage, storyId, surahId } = useAppContext();
 
   // Effect to update the document's language and direction attributes for styling
   useEffect(() => {
@@ -40,7 +41,7 @@ const App: React.FC = () => {
       case 'learn':
         return <LearningScreen />;
       case 'quran':
-        return <QuranScreen />;
+        return surahId ? <QuranViewerScreen /> : <QuranScreen />;
       case 'games':
         return <GamesScreen />;
       case 'matching-game':

@@ -20,6 +20,8 @@ interface AppContextType {
   content: typeof contentData.en;
   storyId: string | null;
   setStoryId: (id: string | null) => void;
+  surahId: string | null;
+  setSurahId: (id: string | null) => void;
 }
 
 // Create the context with a default value.
@@ -37,6 +39,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [currentPage, setCurrentPage] = useState<Page | string>('home');
   const [content, setContent] = useState(contentData.en);
   const [storyId, setStoryId] = useState<string | null>(null);
+  const [surahId, setSurahId] = useState<string | null>(null);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
@@ -63,7 +66,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setCurrentPage,
     content,
     storyId,
-    setStoryId
+    setStoryId,
+    surahId,
+    setSurahId,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
