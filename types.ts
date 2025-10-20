@@ -6,7 +6,7 @@ export type Language = 'en' | 'ar';
 /**
  * Represents the available pages/screens in the application.
  */
-export type Page = 'home' | 'learn' | 'games' | 'stories' | 'rewards' | 'settings' | 'matching-game' | 'subscribe' | 'color-quiz-game';
+export type Page = 'home' | 'learn' | 'games' | 'stories' | 'rewards' | 'settings' | 'matching-game' | 'subscribe' | 'color-quiz-game' | 'quran';
 
 /**
  * Represents a single learning item, like a letter, number, or color.
@@ -30,6 +30,17 @@ export interface Story {
   content: string[];
   imageUrl: string;
   isPremium: boolean;
+}
+
+/**
+ * Represents a short surah from the Quran.
+ */
+export interface QuranSurah {
+  id: string;
+  name: string;
+  englishName: string;
+  imageUrl: string;
+  audioUrl: string;
 }
 
 /**

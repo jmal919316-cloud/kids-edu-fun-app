@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAppContext } from '../hooks/useAppContext';
 import type { Page } from '../types';
@@ -8,13 +7,14 @@ interface MenuButtonProps {
   color: string;
   icon: string;
   onClick: () => void;
+  isLarge?: boolean;
 }
 
 // Internal component for menu buttons to avoid re-rendering issues
-const MenuButton: React.FC<MenuButtonProps> = ({ label, color, icon, onClick }) => (
+const MenuButton: React.FC<MenuButtonProps> = ({ label, color, icon, onClick, isLarge = false }) => (
   <button
     onClick={onClick}
-    className={`${color} text-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center text-center transform hover:scale-105 active:scale-95 transition-transform duration-200`}
+    className={`${color} text-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center text-center transform hover:scale-105 active:scale-95 transition-transform duration-200 ${isLarge ? 'col-span-2' : ''}`}
   >
     <span className="text-6xl mb-2">{icon}</span>
     <span className="text-2xl font-bold">{label}</span>
@@ -27,12 +27,13 @@ const MenuButton: React.FC<MenuButtonProps> = ({ label, color, icon, onClick }) 
 const HomeScreen: React.FC = () => {
   const { setCurrentPage, content } = useAppContext();
 
-  const menuItems: { label: string; icon: string; color: string; page: Page }[] = [
+  const menuItems: { label: string; icon: string; color: string; page: Page, isLarge?: boolean }[] = [
     { label: content.home.startLearning, icon: '🎓', color: 'bg-brand-blue', page: 'learn' },
     { label: content.home.stories, icon: '📚', color: 'bg-brand-pink', page: 'stories' },
+    { label: content.home.quran, icon: '🌙', color: 'bg-brand-teal', page: 'quran', isLarge: true },
     { label: content.home.games, icon: '🎮', color: 'bg-brand-green', page: 'games' },
     { label: content.home.rewards, icon: '🏆', color: 'bg-brand-yellow', page: 'rewards' },
-    { label: content.home.settings, icon: '⚙️', color: 'bg-brand-purple', page: 'settings' },
+    { label: content.home.settings, icon: '⚙️', color: 'bg-brand-purple', page: 'settings', isLarge: true },
   ];
 
   return (
@@ -47,6 +48,7 @@ const HomeScreen: React.FC = () => {
             label={item.label}
             icon={item.icon}
             color={item.color}
+            isLarge={item.isLarge}
             onClick={() => setCurrentPage(item.page)}
           />
         ))}

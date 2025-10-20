@@ -1,4 +1,4 @@
-import type { LearningItem, Story, GameCard, ColorQuizQuestion } from '../types';
+import type { LearningItem, Story, GameCard, ColorQuizQuestion, QuranSurah } from '../types';
 
 /**
  * DEVELOPER NOTE:
@@ -21,6 +21,7 @@ interface Content {
     games: string;
     rewards: string;
     settings: string;
+    quran: string;
   };
   header: {
     back: string;
@@ -32,6 +33,9 @@ interface Content {
     numbers: string;
     colors: string;
     premium: string;
+  };
+  quran: {
+    title: string;
   };
   games: {
     title: string;
@@ -83,6 +87,7 @@ interface Content {
   numbers: LearningItem[];
   colors: LearningItem[];
   storiesData: Story[];
+  quranSurahs: QuranSurah[];
   matchingGameCards: GameCard[];
   colorQuizQuestions: ColorQuizQuestion[];
 }
@@ -100,6 +105,7 @@ export const contentData: { [key: string]: Content } = {
       games: 'Games',
       rewards: 'Rewards',
       settings: 'Settings',
+      quran: 'Holy Quran',
     },
     header: {
       back: 'Back',
@@ -111,6 +117,9 @@ export const contentData: { [key: string]: Content } = {
       numbers: 'Numbers',
       colors: 'Colors',
       premium: 'Premium',
+    },
+    quran: {
+        title: 'Holy Quran'
     },
     games: {
       title: 'Play a Game!',
@@ -238,6 +247,12 @@ export const contentData: { [key: string]: Content } = {
         { id: 'en-s-17', title: 'The Boy Who Could Talk to Plants', content: ['Finn could hear what plants were saying. The roses asked for water, and the big oak tree told stories of the past.', 'He became the best gardener in the world.'], imageUrl: 'https://picsum.photos/seed/plant-talker/400/300', isPremium: true },
         { id: 'en-s-18', title: 'The Magical Snowman', content: ['One winter day, a snowman came to life. He showed the children a hidden ice skating rink made of frozen moonlight.', 'They skated all night until the sun came up.'], imageUrl: 'https://picsum.photos/seed/snowman/400/300', isPremium: true },
     ],
+    quranSurahs: [
+        { id: 'quran-1', name: 'Al-Fatiha', englishName: 'The Opening', imageUrl: 'https://picsum.photos/seed/kaaba/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001001.mp3' },
+        { id: 'quran-2', name: 'Al-Ikhlas', englishName: 'The Sincerity', imageUrl: 'https://picsum.photos/seed/mosque/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112001.mp3' },
+        { id: 'quran-3', name: 'Al-Falaq', englishName: 'The Daybreak', imageUrl: 'https://picsum.photos/seed/dawn/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/113001.mp3' },
+        { id: 'quran-4', name: 'An-Nas', englishName: 'The Mankind', imageUrl: 'https://picsum.photos/seed/people/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/114001.mp3' },
+    ],
     matchingGameCards: [
         { id: 'card-1', content: 'Apple', imageUrl: 'https://picsum.photos/seed/apple/100', matchId: 'fruit' },
         { id: 'card-2', content: 'Apple', imageUrl: 'https://picsum.photos/seed/apple/100', matchId: 'fruit' },
@@ -264,6 +279,7 @@ export const contentData: { [key: string]: Content } = {
       games: 'الألعاب',
       rewards: 'الجوائز',
       settings: 'الإعدادات',
+      quran: 'القرآن الكريم',
     },
     header: {
       back: 'رجوع',
@@ -275,6 +291,9 @@ export const contentData: { [key: string]: Content } = {
       numbers: 'الأرقام',
       colors: 'الألوان',
       premium: 'حصري',
+    },
+    quran: {
+        title: 'القرآن الكريم'
     },
     games: {
       title: 'العب لعبة!',
@@ -403,6 +422,12 @@ export const contentData: { [key: string]: Content } = {
         { id: 'ar-s-16', title: 'سباق حيوانات الغابة', content: ['قررت السلحفاة والأرنب إجراء سباق إعادة.', 'هذه المرة، عملا معًا مع السنجاب والثعلب لإنهاء السباق كفريق واحد.'], imageUrl: 'https://picsum.photos/seed/race/400/300', isPremium: false },
         { id: 'ar-s-17', title: 'الفتى الذي يستطيع التحدث إلى النباتات', content: ['كان فين يسمع ما تقوله النباتات. طلبت الورود الماء، وروت شجرة البلوط الكبيرة قصصًا من الماضي.', 'أصبح أفضل بستاني في العالم.'], imageUrl: 'https://picsum.photos/seed/plant-talker/400/300', isPremium: true },
         { id: 'ar-s-18', title: 'رجل الثلج السحري', content: ['في أحد أيام الشتاء، عاد رجل ثلج إلى الحياة. أظهر للأطفال حلبة تزلج على الجليد مخفية مصنوعة من ضوء القمر المتجمد.', 'تزلجوا طوال الليل حتى أشرقت الشمس.'], imageUrl: 'https://picsum.photos/seed/snowman/400/300', isPremium: true },
+    ],
+    quranSurahs: [
+        { id: 'quran-1', name: 'سورة الفاتحة', englishName: 'The Opening', imageUrl: 'https://picsum.photos/seed/kaaba/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001001.mp3' },
+        { id: 'quran-2', name: 'سورة الإخلاص', englishName: 'The Sincerity', imageUrl: 'https://picsum.photos/seed/mosque/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112001.mp3' },
+        { id: 'quran-3', name: 'سورة الفلق', englishName: 'The Daybreak', imageUrl: 'https://picsum.photos/seed/dawn/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/113001.mp3' },
+        { id: 'quran-4', name: 'سورة الناس', englishName: 'The Mankind', imageUrl: 'https://picsum.photos/seed/people/200', audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/114001.mp3' },
     ],
     matchingGameCards: [
         { id: 'card-1', content: 'تفاحة', imageUrl: 'https://picsum.photos/seed/apple/100', matchId: 'fruit' },

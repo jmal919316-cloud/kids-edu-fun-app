@@ -12,6 +12,7 @@ import MatchingGameScreen from './screens/MatchingGameScreen';
 import StoryViewerScreen from './screens/StoryViewerScreen';
 import SubscriptionScreen from './screens/SubscriptionScreen';
 import ColorQuizGameScreen from './screens/ColorQuizGameScreen';
+import QuranScreen from './screens/QuranScreen';
 
 /**
  * The main component of the application.
@@ -38,6 +39,8 @@ const App: React.FC = () => {
         return <HomeScreen />;
       case 'learn':
         return <LearningScreen />;
+      case 'quran':
+        return <QuranScreen />;
       case 'games':
         return <GamesScreen />;
       case 'matching-game':
