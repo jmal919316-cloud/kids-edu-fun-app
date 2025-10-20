@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../hooks/useAppContext';
 import Header from '../components/Header';
 import type { LearningItem } from '../types';
@@ -13,52 +13,89 @@ type LearningCategory = 'letters' | 'numbers' | 'colors';
 const LearningScreen: React.FC = () => {
   const { content, isSubscribed, setCurrentPage, language } = useAppContext();
   const [activeTab, setActiveTab] = useState<LearningCategory>('letters');
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
-  const learningData: { [key in LearningCategory]: LearningItem[] } = {
-    letters: content.letters,
-    numbers: content.numbers,
-    colors: content.colors,
-  };
-  
+  // Effect to load speech synthesis voices, ensuring mobile compatibility.
+  useEffect(() => {
+    const loadVoices = () => {
+      const availableVoices = window.speechSynthesis.getVoices();
+      if (availableVoices.length > 0) {
+        setVoices(availableVoices);
+      }
+    };
+
+    // The 'voiceschanged' event is crucial, especially on mobile, as voices are loaded asynchronously.
+    window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
+    // Call it once initially in case voices are already loaded.
+    loadVoices();
+
+    // Cleanup the event listener on component unmount.
+    return () => {
+      window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+      // Stop any speech that might be ongoing when the user navigates away.
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
   const handleTabClick = (tab: LearningCategory) => {
-      setActiveTab(tab);
+    setActiveTab(tab);
   };
   
   const handleItemClick = (item: LearningItem) => {
     if (item.isPremium && !isSubscribed) {
       setCurrentPage('subscribe');
     } else {
-      // Use Web Speech API to pronounce the word
-      if ('speechSynthesis' in window) {
-        // Stop any currently speaking utterance to prevent overlap
+      // Use Web Speech API to pronounce the word, checking for voice readiness.
+      if ('speechSynthesis' in window && voices.length > 0) {
+        // Stop any currently speaking utterance to prevent overlap.
         window.speechSynthesis.cancel();
         
         let textToSpeak = '';
         const category = item.id.split('-')[1]; // 'l' for letter, 'n' for number, 'c' for color
 
         if (category === 'l') {
-            // For letters, pronounce the letter and then the example word
+            // For letters, pronounce the letter and then the example word.
             textToSpeak = `${item.display}, ${item.word}`;
         } else if (category === 'n') {
-            // For numbers, pronounce the word for the number
+            // For numbers, pronounce the word for the number.
             textToSpeak = item.word;
         } else if (category === 'c') {
-            // For colors, pronounce the color name
+            // For colors, pronounce the color name.
             textToSpeak = item.display;
         }
 
         if (textToSpeak) {
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
             
-            // Set the language for the speech synthesis
-            utterance.lang = language === 'ar' ? 'ar-SA' : 'en-US';
+            // Find a suitable voice for the selected language for better pronunciation.
+            const targetLang = language === 'ar' ? 'ar-SA' : 'en-US';
+            const voice = voices.find(v => v.lang === targetLang) || voices.find(v => v.lang.startsWith(language));
             
+            if (voice) {
+              utterance.voice = voice;
+            } else {
+              // Fallback to setting the lang property if no specific voice is found.
+              utterance.lang = targetLang;
+            }
+            
+            // Adjust rate and pitch to be more kid-friendly.
+            utterance.rate = 0.9;
+            utterance.pitch = 1.1;
+
             window.speechSynthesis.speak(utterance);
         }
       } else {
-          console.warn('Web Speech API is not supported in this browser.');
+          console.warn('Web Speech API is not supported or voices are not loaded yet.');
       }
     }
+  };
+
+  // FIX: The 'learningData' variable was not defined.
+  // This object maps the active tab to the corresponding data from the context.
+  const learningData = {
+    letters: content.letters,
+    numbers: content.numbers,
+    colors: content.colors,
   };
 
   return (
