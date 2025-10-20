@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAppContext } from '../hooks/useAppContext';
 import Header from '../components/Header';
 import type { LearningItem } from '../types';
@@ -13,85 +13,78 @@ type LearningCategory = 'letters' | 'numbers' | 'colors';
 const LearningScreen: React.FC = () => {
   const { content, isSubscribed, setCurrentPage, language } = useAppContext();
   const [activeTab, setActiveTab] = useState<LearningCategory>('letters');
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-
-  // Effect to load speech synthesis voices, ensuring mobile compatibility.
-  useEffect(() => {
-    const loadVoices = () => {
-      const availableVoices = window.speechSynthesis.getVoices();
-      if (availableVoices.length > 0) {
-        setVoices(availableVoices);
-      }
-    };
-
-    // The 'voiceschanged' event is crucial, especially on mobile, as voices are loaded asynchronously.
-    window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
-    // Call it once initially in case voices are already loaded.
-    loadVoices();
-
-    // Cleanup the event listener on component unmount.
-    return () => {
-      window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
-      // Stop any speech that might be ongoing when the user navigates away.
-      window.speechSynthesis.cancel();
-    };
-  }, []);
 
   const handleTabClick = (tab: LearningCategory) => {
     setActiveTab(tab);
   };
   
+  /**
+   * Handles clicks on learning items, providing pronunciation using the Web Speech API.
+   * This implementation is robust for mobile devices where voices may load asynchronously.
+   */
   const handleItemClick = (item: LearningItem) => {
     if (item.isPremium && !isSubscribed) {
       setCurrentPage('subscribe');
-    } else {
-      // Use Web Speech API to pronounce the word, checking for voice readiness.
-      if ('speechSynthesis' in window && voices.length > 0) {
-        // Stop any currently speaking utterance to prevent overlap.
-        window.speechSynthesis.cancel();
+      return;
+    }
+    
+    // Check for browser support for speech synthesis.
+    if (!('speechSynthesis' in window)) {
+        console.error("This browser does not support speech synthesis.");
+        return;
+    }
+
+    // Stop any speech that might be ongoing from a previous click.
+    window.speechSynthesis.cancel();
+    
+    let textToSpeak = '';
+    const category = item.id.split('-')[1]; // 'l', 'n', or 'c'
+
+    if (category === 'l') {
+        // For letters, pronounce the letter and then the example word.
+        textToSpeak = `${item.display}, ${item.word}`;
+    } else if (category === 'n') {
+        // For numbers, pronounce the word for the number.
+        textToSpeak = item.word;
+    } else if (category === 'c') {
+        // For colors, pronounce the color name.
+        textToSpeak = item.display;
+    }
+
+    if (!textToSpeak) return;
+
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    const targetLang = language === 'ar' ? 'ar-SA' : 'en-US';
+    
+    // Set properties for a more kid-friendly voice.
+    utterance.lang = targetLang;
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+
+    // This function finds the best available voice and triggers the speech.
+    const speak = () => {
+        const voices = window.speechSynthesis.getVoices();
+        // Find the best matching voice for the current language.
+        const voice = voices.find(v => v.lang === targetLang) || voices.find(v => v.lang.startsWith(language));
         
-        let textToSpeak = '';
-        const category = item.id.split('-')[1]; // 'l' for letter, 'n' for number, 'c' for color
-
-        if (category === 'l') {
-            // For letters, pronounce the letter and then the example word.
-            textToSpeak = `${item.display}, ${item.word}`;
-        } else if (category === 'n') {
-            // For numbers, pronounce the word for the number.
-            textToSpeak = item.word;
-        } else if (category === 'c') {
-            // For colors, pronounce the color name.
-            textToSpeak = item.display;
+        if (voice) {
+          utterance.voice = voice;
         }
+        
+        window.speechSynthesis.speak(utterance);
+    };
 
-        if (textToSpeak) {
-            const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            
-            // Find a suitable voice for the selected language for better pronunciation.
-            const targetLang = language === 'ar' ? 'ar-SA' : 'en-US';
-            const voice = voices.find(v => v.lang === targetLang) || voices.find(v => v.lang.startsWith(language));
-            
-            if (voice) {
-              utterance.voice = voice;
-            } else {
-              // Fallback to setting the lang property if no specific voice is found.
-              utterance.lang = targetLang;
-            }
-            
-            // Adjust rate and pitch to be more kid-friendly.
-            utterance.rate = 0.9;
-            utterance.pitch = 1.1;
-
-            window.speechSynthesis.speak(utterance);
-        }
-      } else {
-          console.warn('Web Speech API is not supported or voices are not loaded yet.');
-      }
+    // Voices often load asynchronously, especially on mobile.
+    // Check if they are already loaded.
+    if (window.speechSynthesis.getVoices().length > 0) {
+      speak();
+    } else {
+      // If voices are not ready, set up a listener to speak as soon as they are.
+      // This is crucial for mobile browser compatibility.
+      window.speechSynthesis.onvoiceschanged = speak;
     }
   };
 
-  // FIX: The 'learningData' variable was not defined.
-  // This object maps the active tab to the corresponding data from the context.
   const learningData = {
     letters: content.letters,
     numbers: content.numbers,
@@ -107,7 +100,8 @@ const LearningScreen: React.FC = () => {
         <button onClick={() => handleTabClick('colors')} className={`px-4 py-2 rounded-lg text-lg font-bold ${activeTab === 'colors' ? 'bg-brand-pink text-white' : 'bg-white'}`}>{content.learning.colors}</button>
       </div>
       <div className="flex-grow p-4 overflow-y-auto flex flex-col gap-4">
-        {learningData[activeTab].map((item) => {
+        {/* SAFEGUARD: Use `|| []` to prevent a crash if the data array is temporarily undefined during a re-render. */}
+        {(learningData[activeTab] || []).map((item) => {
           const isLocked = !!item.isPremium && !isSubscribed;
           const isColorTab = activeTab === 'colors';
 
